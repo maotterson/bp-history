@@ -1,9 +1,15 @@
 <template>
-  <div class="bg-red-700" id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <Dashboard />
 </template>
+
+<script>
+import Dashboard from "./views/Dashboard";
+export default {
+  components: { Dashboard },
+
+}
+</script>
+
+<style>
+
+</style>
