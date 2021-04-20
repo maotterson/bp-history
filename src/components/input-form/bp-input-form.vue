@@ -10,6 +10,8 @@
         type="date"
         v-on:focus="enterInput"
         v-on:blur="leaveInput"
+        v-on:keyup="validateWhileTyping"
+        v-on:change="validateWhileTyping"
         id="date">
     </BpInputRow>
     <BpInputRow>
@@ -27,6 +29,7 @@
           placeholder="120"
           v-on:focus="enterInput"
           v-on:blur="leaveInput"
+          v-on:keyup="validateWhileTyping"
           id="systolic">
         <div>/</div>
         <input
@@ -37,6 +40,7 @@
           maxlength="3"
           v-on:focus="enterInput"
           v-on:blur="leaveInput"
+          v-on:keyup="validateWhileTyping"
           id="diastolic">
           <div
             class="flex-grow"
@@ -50,8 +54,10 @@
         type="text"
         size="3"
         maxlength="3"
+        placeholder="60"
         v-on:focus="enterInput"
         v-on:blur="leaveInput"
+        v-on:keyup="validateWhileTyping"
         id="pulse">
     </BpInputRow>
     <BpInputRow>
@@ -60,9 +66,9 @@
         class="border-2 p-4 text-black"
         :class="submitEnabled ? 'bg-white color-black' : 'bg-gray-200 text-gray-400'"
         type="button" 
-        value="Submit"
+        :value="submitting? 'Adding Reading' : 'Add Reading'"
         @click="onSubmitClick"
-        >
+      >
     </BpInputRow>
   </div>
 </template>
@@ -73,34 +79,14 @@ export default {
   components: { BpInputRow },
   data () {
       return {
-          inputs : {
-            dateProps : {
-              type : "date",
-              name: "date",
-              id : "date"
-            },
-            bpProps : {
-              type : "text",
-              name: "bp",
-              id : "bp",
-              size: "3",
-              placeholder:"120/80"
-            },
-            hrProps : {
-              type : "text",
-              name: "hr",
-              id : "hr",
-              size : "3",
-              placeholder:"60"
-            },
-          },
           rules: [
             { id: "date", rule: "date" },
             { id: "diastolic", rule: "digits" },
             { id: "systolic", rule: "digits" },
             { id: "pulse", rule: "digits" }
           ],
-          submitEnabled : false
+          submitEnabled : false,
+          submitting : false
       }
   },
   methods:{
@@ -109,6 +95,7 @@ export default {
     },
     enterInput($event){
       this.submitEnabled = false;
+      this.validateWhileTyping();
       if($event.srcElement.id == 'systolic' || $event.srcElement.id == 'diastolic'){
         this.$refs.bpContainer.classList.remove('success')
         this.$refs.diasInput.classList.remove('success')
@@ -123,7 +110,10 @@ export default {
       }
     },
     leaveInput($event){
-      if(this.validate($event.srcElement)){
+      if(this.validate($event.srcElement) && 
+        !(($event.srcElement.id=='systolic')&&(!this.validate(this.$refs.diasInput))) &&
+        !(($event.srcElement.id=='diastolic')&&(!this.validate(this.$refs.systInput)))
+      ){
         if($event.srcElement.id == 'systolic' || $event.srcElement.id == 'diastolic'){
           this.$refs.bpContainer.classList.add('success')
           this.$refs.diasInput.classList.add('success')
@@ -152,7 +142,15 @@ export default {
         if(!this.validate(document.getElementById(this.rules[i].id))){
           return false
         }
-        return true
+      }
+      return true
+    },
+    validateWhileTyping(){
+      if(this.validateAllInputs()){
+        this.submitEnabled = true;
+      }
+      else{
+        this.submitEnabled = false;
       }
     },
     validate(element){
@@ -180,6 +178,17 @@ export default {
     },
     onSubmitClick($event){
       console.log($event)
+      this.submitEnabled = false;
+      this.submitting = true;
+      setTimeout(this.successfulSubmission, 200);
+    },
+    successfulSubmission(){
+      this.rules.forEach(rule =>{
+        document.getElementById(rule.id).value = "";
+        document.getElementById(rule.id).classList.remove('success');
+      })
+      this.$refs.bpContainer.classList.remove('success')
+      this.submitting = false;
     }
   },
 
@@ -201,7 +210,7 @@ export default {
 .mini-text:focus{
   outline: none;
   border-width:0px;
-  background-color:rgb(51, 133, 255) !important;
+  background-color:rgb(94, 158, 255) !important;
   color:white;
 }
 
@@ -211,11 +220,13 @@ export default {
 }
 .error{
   border-color:rgb(219, 0, 0) !important;
+  color:rgb(77, 0, 0) !important;
   background-color:rgb(255, 200, 200) !important;
 }
 .success{
   border-color:rgb(0, 231, 0) !important;
   background-color:rgb(227, 255, 227) !important;
+  color:rgb(0, 131, 0) !important;
 }
 
 </style>
