@@ -68,6 +68,7 @@
         type="button" 
         :value="submitting? 'Adding Reading' : 'Add Reading'"
         @click="onSubmitClick"
+        ref="button"
       >
     </BpInputRow>
   </div>
@@ -180,6 +181,14 @@ export default {
       console.log($event)
       this.submitEnabled = false;
       this.submitting = true;
+      const requestData = {
+        date : document.getElementById('date').value,
+        systolic : document.getElementById('systolic').value,
+        diastolic : document.getElementById('diastolic').value,
+        pulse : document.getElementById('pulse').value
+      }
+      this.$store.commit('onSubmitData',requestData)
+      //simulating a successful submission
       setTimeout(this.successfulSubmission, 200);
     },
     successfulSubmission(){
@@ -188,7 +197,10 @@ export default {
         document.getElementById(rule.id).classList.remove('success');
       })
       this.$refs.bpContainer.classList.remove('success')
-      this.submitting = false;
+      setTimeout(()=>{
+        this.submitting = false;
+      }, 1000);
+      this.$refs.button.value="Added successfully"
     }
   },
 
