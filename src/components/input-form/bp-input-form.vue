@@ -5,48 +5,72 @@
     </div>
     <BpInputRow>
       <label class="flex-grow" for="date">Date</label>
-      <BpInputText 
-        :inputProps="inputs.dateProps"
-      />
+      <input
+        class="rounded p-4 border-2 border-gray-700 text-black w-1/2" 
+        type="date"
+        v-on:focus="enterInput"
+        v-on:blur="leaveInput"
+        id="date">
     </BpInputRow>
     <BpInputRow>
       <label class="flex-grow" for="bp">Blood Pressure</label>
       <div
-        class="bp-container bg-white flex flex-row text-black rounded border-2 border-gray-700 p-4 w-1/2">
+        class="bp-container bg-white flex flex-row text-black rounded border-2 border-gray-700 p-4 w-1/2"
+        id="bp-container"
+        ref="bpContainer"
+        >
         <input
           class="mini-text w-12"
-          name="" 
-          id=""
+          ref="systInput"
           size="3"
-          placeholder="120">
+          maxlength="3"
+          placeholder="120"
+          v-on:focus="enterInput"
+          v-on:blur="leaveInput"
+          id="systolic">
         <div>/</div>
         <input
           class="mini-text w-12"
-          name="" 
-          id=""
+          ref="diasInput"
           size="3"
-          placeholder="80">
+          placeholder="80"
+          maxlength="3"
+          v-on:focus="enterInput"
+          v-on:blur="leaveInput"
+          id="diastolic">
+          <div
+            class="flex-grow"
+            @click="clickBpDiv"></div>
       </div>
     </BpInputRow>
     <BpInputRow>
       <label class="flex-grow" for="hr">Heart Rate</label>
-      <BpInputText 
-        :inputProps="inputs.hrProps"
-      />
+      <input
+        class="rounded p-4 border-2 border-gray-700 text-black w-1/2" 
+        type="text"
+        size="3"
+        maxlength="3"
+        v-on:focus="enterInput"
+        v-on:blur="leaveInput"
+        id="pulse">
     </BpInputRow>
     <BpInputRow>
-      <input 
-      class="border-2 p-4 text-black"
-      type="button" value="Submit">
+      <input
+        :disabled='!submitEnabled'
+        class="border-2 p-4 text-black"
+        :class="submitEnabled ? 'bg-white color-black' : 'bg-gray-200 text-gray-400'"
+        type="button" 
+        value="Submit"
+        @click="onSubmitClick"
+        >
     </BpInputRow>
   </div>
 </template>
 
 <script>
 import BpInputRow from './bp-input-row.vue'
-import BpInputText from './bp-input-text.vue'
 export default {
-  components: { BpInputRow, BpInputText },
+  components: { BpInputRow },
   data () {
       return {
           inputs : {
@@ -69,23 +93,110 @@ export default {
               size : "3",
               placeholder:"60"
             },
-          }
+          },
+          rules: [
+            { id: "date", rule: "date" },
+            { id: "diastolic", rule: "digits" },
+            { id: "systolic", rule: "digits" },
+            { id: "pulse", rule: "digits" }
+          ],
+          submitEnabled : false
       }
   },
+  methods:{
+    clickBpDiv(){
+      this.$refs.systInput.focus()
+    },
+    enterInput($event){
+      this.submitEnabled = false;
+      if($event.srcElement.id == 'systolic' || $event.srcElement.id == 'diastolic'){
+        this.$refs.bpContainer.classList.remove('success')
+        this.$refs.diasInput.classList.remove('success')
+        this.$refs.systInput.classList.remove('success')
+        this.$refs.bpContainer.classList.remove('error')
+        this.$refs.diasInput.classList.remove('error')
+        this.$refs.systInput.classList.remove('error')
+      }
+      else{
+        $event.srcElement.classList.remove('error')
+        $event.srcElement.classList.remove('success')
+      }
+    },
+    leaveInput($event){
+      if(this.validate($event.srcElement)){
+        if($event.srcElement.id == 'systolic' || $event.srcElement.id == 'diastolic'){
+          this.$refs.bpContainer.classList.add('success')
+          this.$refs.diasInput.classList.add('success')
+          this.$refs.systInput.classList.add('success')
+        }
+        else{
+          $event.srcElement.classList.add('success')
+        }
+        if(this.validateAllInputs()){
+          this.submitEnabled = true;
+        }
+      }
+      else{
+        if($event.srcElement.id == 'systolic' || $event.srcElement.id == 'diastolic'){
+          this.$refs.bpContainer.classList.add('error')
+          this.$refs.diasInput.classList.add('error')
+          this.$refs.systInput.classList.add('error')
+        }
+        else{
+          $event.srcElement.classList.add('error')
+        }
+      }
+    },
+    validateAllInputs(){
+      for(let i=0;i<this.rules.length;i++){
+        if(!this.validate(document.getElementById(this.rules[i].id))){
+          return false
+        }
+        return true
+      }
+    },
+    validate(element){
+      const rule = this.rules.find(rule => rule.id === element.id)
+      if(rule.rule == "date"){
+        let date;
+        try{
+          date = new Date(element.value)
+          if(date.getFullYear()<2000 || date.getFullYear()>2021 || element.value==""){
+            throw new Error("Invalid year")
+          }
+          return true
+        }
+        catch{
+          return false
+        }
+      }
+      else if(rule.rule == "digits"){
+        if(element.value > 30 && element.value < 300){
+          return true;
+        }
+        return false;
+      }
+      
+    },
+    onSubmitClick($event){
+      console.log($event)
+    }
+  },
+
 }
 </script>
 
 <style>
 :focus {
   outline:none;
-  border-color:rgb(255, 118, 118) !important;
-  background-color:rgb(255, 235, 235) !important;
+  border-color:rgb(37, 168, 255) !important;
+  background-color:rgb(188, 228, 255) !important;
 }
 .mini-text{
   background-color:parent;
 }
 .bp-container:focus-within>.mini-text{
-  background-color:rgb(255, 235, 235) ;
+  background-color:rgb(188, 228, 255) ;
 }
 .mini-text:focus{
   outline: none;
@@ -95,8 +206,16 @@ export default {
 }
 
 .bp-container:focus-within {
-  border-color:rgb(255, 118, 118);
-  background-color:rgb(255, 235, 235) !important;
+  border-color:rgb(37, 168, 255) !important;
+  background-color:rgb(188, 228, 255) !important;
+}
+.error{
+  border-color:rgb(219, 0, 0) !important;
+  background-color:rgb(255, 200, 200) !important;
+}
+.success{
+  border-color:rgb(0, 231, 0) !important;
+  background-color:rgb(227, 255, 227) !important;
 }
 
 </style>
