@@ -71,6 +71,9 @@
         ref="button"
       >
     </BpInputRow>
+    <div
+      :v-if="currentResponse.success">
+      Successfully created
   </div>
 </template>
 
@@ -89,6 +92,11 @@ export default {
           submitEnabled : false,
           submitting : false
       }
+  },
+  computed:{
+    currentResponse(){
+      return this.$store.state.currentResponse;
+    }
   },
   methods:{
     clickBpDiv(){
@@ -187,7 +195,7 @@ export default {
         diastolic : document.getElementById('diastolic').value,
         pulse : document.getElementById('pulse').value
       }
-      this.$store.commit('onSubmitData',requestData)
+      this.$store.dispatch('postData',requestData)
       //simulating a successful submission
       setTimeout(this.successfulSubmission, 200);
     },
