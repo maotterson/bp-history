@@ -1,9 +1,10 @@
 <template>
-  <div class="bg-white text-gray-700 h-screen w-screen flex flex-col items-center">
+  <div class="bg-white text-gray-700 h-screen flex flex-col items-center">
     <div  >
       <img src="@/assets/logo.png" alt="Blood Pressure Logo">
     </div>
-    <BpInputRow>
+    <BpInputRow>      
+      <span class="icon-droplet text-4xl  mr-8"></span>
       <label class="flex-grow" for="date">Date</label>
       <input
         class="rounded p-4 border-2 border-gray-700 text-black w-1/2" 
@@ -15,6 +16,7 @@
         id="date">
     </BpInputRow>
     <BpInputRow>
+      <span class="icon-droplet text-4xl  mr-8"></span>
       <label class="flex-grow" for="bp">Blood Pressure</label>
       <div
         class="bp-container bg-white flex flex-row text-black rounded border-2 border-gray-700 p-4 w-1/2"
@@ -48,6 +50,7 @@
       </div>
     </BpInputRow>
     <BpInputRow>
+      <span class="icon-heartbeat text-4xl mr-8"></span>
       <label class="flex-grow" for="hr">Heart Rate</label>
       <input
         class="rounded p-4 border-2 border-gray-700 text-black w-1/2" 
@@ -74,6 +77,7 @@
     <div
       :v-if="currentResponse.success">
       Successfully created
+    </div>
   </div>
 </template>
 
