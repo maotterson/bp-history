@@ -1,13 +1,15 @@
 <template>
-  <div class="bg-white text-gray-700 h-screen flex flex-col items-center">
-    <div  >
-      <img src="@/assets/logo.png" alt="Blood Pressure Logo">
+  <div class="bg-white text-gray-700 flex flex-col items-center text-red-700 shadow-2xl p-12">
+    <div>
+      <span class="icon-heartbeat header-icon text-red-700"></span>
     </div>
     <BpInputRow>      
-      <span class="icon-droplet text-4xl  mr-8"></span>
-      <label class="flex-grow" for="date">Date</label>
+      <div class="flex flex-row mb-2">
+        <span class="icon-droplet text-3xl  mr-2"></span>
+        <label class="flex-grow text-3xl" for="date">Date</label>
+      </div>
       <input
-        class="rounded p-4 border-2 border-gray-700 text-black w-1/2" 
+        class="rounded p-4 border-2 border-gray-700 text-black w-full" 
         type="date"
         v-on:focus="enterInput"
         v-on:blur="leaveInput"
@@ -16,10 +18,12 @@
         id="date">
     </BpInputRow>
     <BpInputRow>
-      <span class="icon-droplet text-4xl  mr-8"></span>
-      <label class="flex-grow" for="bp">Blood Pressure</label>
+      <div class="flex flex-row mb-2">
+        <span class="icon-droplet text-3xl mr-2"></span>
+        <label class="flex-grow text-3xl" for="bp">Blood Pressure</label>
+      </div>
       <div
-        class="bp-container bg-white flex flex-row text-black rounded border-2 border-gray-700 p-4 w-1/2"
+        class="bp-container bg-white flex flex-row text-black rounded border-2 border-gray-700 p-4 w-full"
         id="bp-container"
         ref="bpContainer"
         >
@@ -50,10 +54,12 @@
       </div>
     </BpInputRow>
     <BpInputRow>
-      <span class="icon-heartbeat text-4xl mr-8"></span>
-      <label class="flex-grow" for="hr">Heart Rate</label>
+      <div class="flex flex-row mb-2">
+        <span class="icon-heartbeat text-3xl mr-2"></span>
+        <label class="flex-grow text-3xl" for="hr">Heart Rate</label>
+      </div>
       <input
-        class="rounded p-4 border-2 border-gray-700 text-black w-1/2" 
+        class="rounded p-4 border-2 border-gray-700 text-black w-full" 
         type="text"
         size="3"
         maxlength="3"
@@ -252,5 +258,7 @@ export default {
   background-color:rgb(227, 255, 227) !important;
   color:rgb(0, 131, 0) !important;
 }
-
+.header-icon{
+  font-size:14rem;
+}
 </style>
