@@ -5,18 +5,9 @@ var router = express.Router();
 //  POST /api/users/:id/readings
 //
 router.post('/users/:id/readings', function(req, res, next) {
-  let msg = "";
-  try{
-    msg = "new reading added"
-  }
-  catch (error) {
-    console.log(error)
-    msg = "error:" + error
-  }
-  data = {
-    message : msg
-  }
-  res.send(data)
+  res.status(201).json({
+    message: "new reading created"
+  })
 });
 
 //  New User

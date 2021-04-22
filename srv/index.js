@@ -1,33 +1,34 @@
 import express from 'express';
 import path from 'path';
-// import socketIO from "socket.io";
+import morgan from 'morgan';
 
-// router modules
 const apiRouter = require('./routes/api');
 
 export default (app, http) => {
+
   app.use(express.json());
-  app.use('/', express.static(path.join(__dirname, 'dist')))
+  app.use(morgan('dev'));
+
   app.use('/api', apiRouter)
 
-  //app.get('/', (req,res,error) => {
-  //res.sendFile('/index.html')
-  //})
-  // app.get('/foo', (req, res) => {
-  //   res.json({msg: 'foo'});
-  // });
-  //
-  // app.post('/bar', (req, res) => {
-  //   res.json(req.body);
-  // });
-  // 
-  // optional support for socket.io
-  // 
-  // let io = socketIO(http);
-  // io.on("connection", client => {
-  //   client.on("message", function(data) {
-  //     // do something
-  //   });
-  //   client.emit("message", "Welcome");
-  // });
+  app.use('/', express.static(path.join(__dirname, 'dist')))
+
+  //other paths => 404 error
+  app.use((req,res,next) =>{
+    const error = new Error('Not Found');
+    error.status = 404;
+    next(error);
+  })
+
+  //middleware that catches any thrown errors that made it to this line
+  app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    res.json({
+      error: {
+        message: error.message
+      }
+    })
+  })
+
+  
 }
