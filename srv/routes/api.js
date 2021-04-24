@@ -5,8 +5,15 @@ var router = express.Router();
 //  POST /api/users/:id/readings
 //
 router.post('/users/:id/readings', function(req, res, next) {
+  const reading = {
+    date: req.body.date,
+    systolic: req.body.systolic,
+    diastolic: req.body.diastolic,
+    pulse: req.body.pulse
+  };
   res.status(201).json({
-    message: "new reading created"
+    message: "new reading created",
+    createdReading: reading
   })
 });
 
