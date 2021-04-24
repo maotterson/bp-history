@@ -14,7 +14,7 @@ export default (app, http) => {
 
   //connect to db via mongoose
   mongoose.connect(
-    "mongodb+srv://faneto:"+process.env.MONGO_ATLAS_PW+"@cluster0.nzkl0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", 
+    process.env.MONGO_CONNECTION_STRING, 
     {
       useMongoClient: true
     }
