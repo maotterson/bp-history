@@ -3,21 +3,35 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const User = require("../models/User");
+const Reading = require("../models/Reading");
 
 //  New Reading
 //  POST /api/users/:id/readings
 //
 router.post('/users/:id/readings', function(req, res, next) {
-  const reading = {
+  const reading = new Reading({
+    _id: new mongoose.Types.ObjectId(),
     date: req.body.date,
     systolic: req.body.systolic,
     diastolic: req.body.diastolic,
     pulse: req.body.pulse
-  };
-  res.status(201).json({
-    message: "new reading created",
-    createdReading: reading
+  });
+  const userId = req.params.id;
+  User.updateOne({ _id: userId }, { $push : { readings : reading} })
+  .exec()
+  .then(result => {
+    console.log(result);
+    res.status(201).json({
+      message: "Handling POST requests to /users/:id/readings",
+      createdReading : result
+    });
   })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
 });
 
 //  New User
