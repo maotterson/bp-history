@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Reading = require('./Reading');
+const ReadingSchema = require('../schemas/ReadingSchema')
 
 const userSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
     password: String,
     firstName: String,
     lastName: String,
-    readings: [Reading]
+    readings: [ReadingSchema]
 });
 
 module.exports = mongoose.model('User', userSchema);

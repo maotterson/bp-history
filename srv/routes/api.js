@@ -1,5 +1,8 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const mongoose = require('mongoose');
+
+const User = require("../models/User");
 
 //  New Reading
 //  POST /api/users/:id/readings
@@ -20,19 +23,29 @@ router.post('/users/:id/readings', function(req, res, next) {
 //  New User
 //  POST /api/users
 //
-router.post('/users', function(req, res, next) {
-  let msg = "";
-  try{
-    msg = "new user added"
-  }
-  catch (error) {
-    console.log(error)
-    msg = "error:" + error
-  }
-  data = {
-    message : msg
-  }
-  res.send(data)
+router.post('/users', (req,res,next) => {
+  const user = new User({
+    _id: new mongoose.Types.ObjectId(),
+    username: req.body.username,
+    password: req.body.password,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName
+  });
+  user
+  .save()
+  .then(result => {
+    console.log(result);
+    res.status(201).json({
+      message: "Handling POST requests to /users",
+      createdUser: result
+    });
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
 });
 
 //  Get User Data by id
