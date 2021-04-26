@@ -20,7 +20,6 @@ export default (app, http) => {
     }
   );
   
-
   //for logging
   app.use(morgan('dev'));
 
