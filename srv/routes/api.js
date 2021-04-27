@@ -11,17 +11,14 @@ const Reading = require("../models/Reading");
 router.post('/users/:id/readings', (req, res, next) => {
   const reading = new Reading({
     _id: new mongoose.Types.ObjectId(),
+    userId: new mongoose.Types.ObjectId(req.params.id),
     date: req.body.date,
     systolic: req.body.systolic,
     diastolic: req.body.diastolic,
     pulse: req.body.pulse
   });
-  const userId = req.params.id;
 
-  // pushing new reading to current user's readings array, 
-  // could alternatively add readings to a separate collection with userId property
-  User.updateOne({ _id: userId }, { $push : { readings : reading} })
-    .exec()
+  reading.save()
     .then(result => {
       console.log(result);
       res.status(201).json({
@@ -45,9 +42,10 @@ router.post('/users', (req, res, next ) => {
     _id: new mongoose.Types.ObjectId(),
     username: req.body.username,
     password: req.body.password,
-    firstName: req.body.firstName,
-    lastName: req.body.lastName
+    firstName: req.body.firstname,
+    lastName: req.body.lastname
   });
+  console.log(user)
   user.save()
     .then(result => {
       console.log(result);
@@ -69,10 +67,7 @@ router.post('/users', (req, res, next ) => {
 //
 router.get('/users/:id', (req, res, next) => {
   const userId = req.params.id;
-  // get user by id request will not contain readings
-  const selectOptions = 
   User.findById(userId)
-    .select('-readings')
     .exec()
     .then(user => {
       console.log(user);
@@ -94,13 +89,29 @@ router.get('/users/:id', (req, res, next) => {
 //
 router.get('/users/:id/readings', (req, res, next) => {
   const userId = req.params.id;
-  User.findById(userId)
+  let start, end;
+  try{
+    start = new Date(req.query.start)
+    end = new Date(req.query.end)
+  }
+  catch (err){
+    console.log(err)
+  }
+  filter = start&&end ? {
+    userId : userId,
+    date : {
+      $gte: start, 
+      $lte: end
+    }
+  } : { 
+    userId : userId 
+  }
+  Reading.find(filter)
     .exec()
-    .then(user => {
-      console.log(user.readings);
+    .then(docs => {
       res.status(200).json({
         message: "GET @ /users/:id/readings (getting user's readings by UserId)",
-        body : user.readings
+        body : docs
       })
     })
     .catch(err => {
@@ -110,7 +121,7 @@ router.get('/users/:id/readings', (req, res, next) => {
       });
     });
 });
-
+//================================================================================================================
 //  Edit User Data
 //  PUT /api/users/:id
 //
