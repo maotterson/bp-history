@@ -123,75 +123,94 @@ router.get('/users/:id/readings', (req, res, next) => {
 });
 //================================================================================================================
 //  Edit User Data
-//  PUT /api/users/:id
+//  PATCH /api/users/:id
 //
-router.put('/users/:id', (req, res, next) => {
-  let msg = "";
-  try{
-    msg = "edited user"
+router.patch('/users/:id', (req, res, next) => {
+  const userId = req.params.id;
+  const updateOps = {};
+  for (const ops of req.body) {
+    updateOps[ops.propName] = ops.value;
   }
-  catch (error) {
-    console.log(error)
-    msg = "error:" + error
-  }
-  data = {
-    message : msg
-  }
-  res.send(data)
+  User.update({ _id: userId }, { $set: updateOps })
+    .exec()
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 //================================================================================================================
 //  Edit Reading
-//  PUT /api/users/:id/readings/:id
+//  PATCH /api/users/:userid/readings/:readingid
 //
-router.put('/users/:id/readings/:id', (req, res, next) => {
-  let msg = "";
-  try{
-    msg = "edited reading"
+router.patch('/users/:userid/readings/:readingid', (req, res, next) => {
+  const userId = req.params.userid;
+  const readingId = req.params.readingid;
+  const updateOps = {};
+  for (const ops of req.body) {
+    updateOps[ops.propName] = ops.value;
   }
-  catch (error) {
-    console.log(error)
-    msg = "error:" + error
-  }
-  data = {
-    message : msg
-  }
-  res.send(data)
+
+  //verify that the user has access to this reading
+
+  Reading.update({ _id: readingId }, { $set: updateOps })
+    .exec()
+    .then(result => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 //================================================================================================================
 //  Delete User
 //  DELETE /api/users/:id
 //
 router.delete('/users/:id', (req, res, next) => {
-  let msg = "";
-  try{
-    msg = "deleted user"
-  }
-  catch (error) {
-    console.log(error)
-    msg = "error:" + error
-  }
-  data = {
-    message : msg
-  }
-  res.send(data)
+  const userId = req.params.id;
+  User.remove({ _id: userId })
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 //================================================================================================================
 //  Delete Reading
-//  DELETE /api/users/:id/readings/:id
+//  DELETE /api/users/:userid/readings/:readingid
 //
-router.delete('/users/:id/readings/:id', (req, res, next) => {
-  let msg = "";
-  try{
-    msg = "deleted reading"
-  }
-  catch (error) {
-    console.log(error)
-    msg = "error:" + error
-  }
-  data = {
-    message : msg
-  }
-  res.send(data)
+router.delete('/users/:userid/readings/:readingid', (req, res, next) => {
+  const userId = req.params.userid;
+  const readingId = req.params.readingid;
+
+  //verify that the user has access to this reading
+
+
+  Reading.remove({ _id: userId })
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 
 module.exports = router;
