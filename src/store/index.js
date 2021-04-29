@@ -10,7 +10,7 @@ export default new Vuex.Store({
     currentResponse : {}
   },
   mutations: {
-    setData(state,response){
+    setReading(state,response){
       this.state.submittedData = {}
       if(response.status == 200){
         this.state.currentResponse = {
@@ -28,11 +28,12 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async postData({commit}, data){
+    async postReading({commit}, data){
       this.state.submittedData = data;
-      const uri = '/api/users'
+      const id = "6087200906f1367ab8ca34ff";
+      const uri = `/api/users/${id}/readings`
       const response = await axios.post(uri, data)
-      commit('setData',response)
+      commit('setReading',response)
     }
   },
   modules: {
