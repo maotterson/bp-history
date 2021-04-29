@@ -97,14 +97,16 @@ router.get('/users/:id/readings', (req, res, next) => {
   catch (err){
     console.log(err)
   }
-  filter = start&&end ? {
+  
+  const filter = {
     userId : userId,
-    date : {
-      $gte: start, 
-      $lte: end
-    }
-  } : { 
-    userId : userId 
+    date : {}
+  }
+  if(start!="Invalid Date"){
+    filter.date.$gte=start;
+  }
+  if(end!="Invalid Date"){
+    filter.date.$lte=end;
   }
   Reading.find(filter)
     .exec()
@@ -131,7 +133,7 @@ router.patch('/users/:id', (req, res, next) => {
   for (const ops of req.body) {
     updateOps[ops.propName] = ops.value;
   }
-  User.update({ _id: userId }, { $set: updateOps })
+  User.updateOne({ _id: userId }, { $set: updateOps })
     .exec()
     .then(result => {
       console.log(result);
@@ -158,7 +160,7 @@ router.patch('/users/:userid/readings/:readingid', (req, res, next) => {
 
   //verify that the user has access to this reading
 
-  Reading.update({ _id: readingId }, { $set: updateOps })
+  Reading.updateOne({ _id: readingId }, { $set: updateOps })
     .exec()
     .then(result => {
       console.log(result);
