@@ -35,7 +35,43 @@ export default new Vuex.Store({
       const uri = `/api/users/${id}/readings`
       const response = await axios.post(uri, data)
       commit('setReading',response)
-    }
+    },
+    async postUser({commit}, data){
+      const uri = `/api/users`
+      const response = await axios.post(uri,data);
+    },
+    async getReadings({commit}, data){
+      const id = "6087200906f1367ab8ca34ff";
+      const uri = `/api/users/${id}/readings`
+      const response = await axios.get(uri);
+    },
+    async getUserData({commit}, data){
+      const id = "6087200906f1367ab8ca34ff";
+      const uri = `/api/users/${id}`
+      const response = await axios.get(uri)
+    },
+    async updateUserData({commit}, data){
+      const id = "6087200906f1367ab8ca34ff";
+      const uri = `/api/users/${id}`
+      const response = await axios.patch(uri,data)
+    },
+    async updateReading({commit}, data){
+      const userId = "6087200906f1367ab8ca34ff";
+      const readingId = data.readingId;
+      const uri = `/api/users/${userId}/readings/${readingId}`
+      const response = await axios.patch(uri,data.body)
+    },
+    async deleteUser({commit}, data){
+      const id = "6087200906f1367ab8ca34ff";
+      const uri = `/api/users/${id}`
+      const response = await axios.delete(uri,data)
+    },
+    async deleteReading({commit}, data){
+      const userId = "6087200906f1367ab8ca34ff";
+      const readingId = data.readingId;
+      const uri = `/api/users/${userId}/readings/${readingId}`
+      const response = await axios.delete(uri,data.body)
+    },
   },
   modules: {
   }
