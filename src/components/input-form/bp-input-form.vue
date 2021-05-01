@@ -205,7 +205,7 @@ export default {
         diastolic : document.getElementById('diastolic').value,
         pulse : document.getElementById('pulse').value
       }
-      this.$store.dispatch('postData',requestData)
+      this.$store.dispatch('postReading',requestData)
       //simulating a successful submission
       setTimeout(this.successfulSubmission, 200);
     },

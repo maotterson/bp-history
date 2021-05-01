@@ -38,16 +38,12 @@ export default (app, http) => {
     next();
   })
 
+  app.use('/', express.static(path.join(__dirname, 'dist')))
   app.use('/api', apiRouter)
 
-  app.use('/', express.static(path.join(__dirname, 'dist')))
+  console.log(__dirname)
+  console.log(path.join(__dirname,'dist'))
 
-  //other paths => 404 error
-  app.use((req,res,next) =>{
-    const error = new Error('Not Found');
-    error.status = 404;
-    next(error);
-  })
 
   //middleware that catches any thrown errors that made it to this line
   app.use((error, req, res, next) => {
@@ -58,6 +54,8 @@ export default (app, http) => {
       }
     })
   })
+
+  
 
   
 }

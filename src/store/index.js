@@ -11,6 +11,7 @@ export default new Vuex.Store({
   },
   mutations: {
     setReading(state,response){
+      console.log(response)
       this.state.submittedData = {}
       if(response.status == 200){
         this.state.currentResponse = {
