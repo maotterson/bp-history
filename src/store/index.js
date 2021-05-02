@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     submittedData : {},
     currentResponse : {},
-    currentReadings: {}
+    currentReadings: {},
+    currentUserData: {},
   },
   mutations: {
     setCurrentReading(state,response){
@@ -28,7 +29,7 @@ export default new Vuex.Store({
     },
     setCurrentReadings(state,response){
       console.log(response)
-      this.state.currentReadings = []
+      this.state.currentReadings = {}
       if(response.status == 200){
         this.state.currentReadings = {
           data: response.data.body,
@@ -38,6 +39,22 @@ export default new Vuex.Store({
       else{
         this.state.currentReadings = {
           data: [],
+          success: false
+        }
+      }
+    },
+    setCurrentUserData(state,response){
+      console.log(response)
+      this.state.currentUserData = {}
+      if(response.status == 200){
+        this.state.currentUserData = {
+          data: response.data.body,
+          success: true
+        }
+      }
+      else{
+        this.state.currentUserData = {
+          data: {},
           success: false
         }
       }
@@ -66,7 +83,7 @@ export default new Vuex.Store({
       const id = data.id;
       const uri = `/api/users/${id}`
       const response = await axios.get(uri)
-      commit('setCurrentReading',response)
+      commit('setCurrentUserData',response)
     },
     async updateUserData({commit}, data){
       const id = "6087200906f1367ab8ca34ff";
