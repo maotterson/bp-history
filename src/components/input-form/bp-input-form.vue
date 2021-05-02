@@ -178,7 +178,7 @@ export default {
         let date;
         try{
           date = new Date(element.value)
-          if(date.getFullYear()<2000 || date.getFullYear()>2021 || element.value==""){
+          if(date.getFullYear()<2000 || date.getFullYear()>2021 || element.value=="" || date>Date.now()){
             throw new Error("Invalid year")
           }
           return true
