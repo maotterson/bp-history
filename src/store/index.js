@@ -7,11 +7,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     submittedData : {},
-    currentResponse : {}
+    currentResponse : {},
+    currentReadings: {}
   },
   mutations: {
-    setReading(state,response){
-      console.log(response)
+    setCurrentReading(state,response){
       this.state.submittedData = {}
       if(response.status == 200){
         this.state.currentResponse = {
@@ -25,7 +25,22 @@ export default new Vuex.Store({
           success: false
         }
       }
-
+    },
+    setCurrentReadings(state,response){
+      console.log(response)
+      this.state.currentReadings = []
+      if(response.status == 200){
+        this.state.currentReadings = {
+          data: response.data.body,
+          success: true
+        }
+      }
+      else{
+        this.state.currentReadings = {
+          data: [],
+          success: false
+        }
+      }
     }
   },
   actions: {
@@ -34,43 +49,50 @@ export default new Vuex.Store({
       const id = "6087200906f1367ab8ca34ff";
       const uri = `/api/users/${id}/readings`
       const response = await axios.post(uri, data)
-      commit('setReading',response)
+      commit('setCurrentReading',response)
     },
     async postUser({commit}, data){
       const uri = `/api/users`
       const response = await axios.post(uri,data);
+      commit('setCurrentReading',response)
     },
-    async getReadings({commit}, data){
-      const id = "6087200906f1367ab8ca34ff";
+    async getReadings({commit},data){
+      const id = data.id;
       const uri = `/api/users/${id}/readings`
       const response = await axios.get(uri);
+      commit('setCurrentReadings',response)
     },
     async getUserData({commit}, data){
-      const id = "6087200906f1367ab8ca34ff";
+      const id = data.id;
       const uri = `/api/users/${id}`
       const response = await axios.get(uri)
+      commit('setCurrentReading',response)
     },
     async updateUserData({commit}, data){
       const id = "6087200906f1367ab8ca34ff";
       const uri = `/api/users/${id}`
       const response = await axios.patch(uri,data)
+      commit('setCurrentReading',response)
     },
     async updateReading({commit}, data){
       const userId = "6087200906f1367ab8ca34ff";
       const readingId = data.readingId;
       const uri = `/api/users/${userId}/readings/${readingId}`
       const response = await axios.patch(uri,data.body)
+      commit('setCurrentReading',response)
     },
     async deleteUser({commit}, data){
       const id = "6087200906f1367ab8ca34ff";
       const uri = `/api/users/${id}`
       const response = await axios.delete(uri,data)
+      commit('setCurrentReading',response)
     },
     async deleteReading({commit}, data){
       const userId = "6087200906f1367ab8ca34ff";
       const readingId = data.readingId;
       const uri = `/api/users/${userId}/readings/${readingId}`
       const response = await axios.delete(uri,data.body)
+      commit('setCurrentReading',response)
     },
   },
   modules: {

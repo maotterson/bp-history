@@ -91,22 +91,22 @@ router.get('/users/:id/readings', (req, res, next) => {
   const userId = req.params.id;
   let start, end;
   try{
-    start = new Date(req.query.start)
-    end = new Date(req.query.end)
+    
+    start = req.query.start ? new Date(req.query.start) : ""
+    end = req.query.start ? new Date(req.query.end) : ""
   }
   catch (err){
     console.log(err)
   }
   
   const filter = {
-    userId : userId,
-    date : {}
+    userId : userId
   }
-  if(start!="Invalid Date"){
-    filter.date.$gte=start;
+  if(start!="Invalid Date"&&start!=""){
+    filter['date']['$gte']=start;
   }
-  if(end!="Invalid Date"){
-    filter.date.$lte=end;
+  if(end!="Invalid Date"&&end!=""){
+    filter['date']['$lte']=end;
   }
   Reading.find(filter)
     .exec()
