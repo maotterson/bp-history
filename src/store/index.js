@@ -10,6 +10,7 @@ export default new Vuex.Store({
     currentResponse : {},
     currentReadings: {},
     currentUserData: {},
+    loggedIn: false
   },
   mutations: {
     setCurrentReading(state,response){
