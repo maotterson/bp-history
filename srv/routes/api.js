@@ -68,12 +68,31 @@ router.post('/users', (req, res, next ) => {
 //  Login attempt
 //  POST /api/login
 //
-router.post('/login', (req, res, next ) => {
-  console.log(req.body)
-  res.status(200).json({
-    message: "POST @ /login (login attempt)",
-    body: req
-  })
+router.post('/login', async (req, res, next ) => {
+  const username = req.body.username
+  const passwordHash = await bcrypt.hash(req.body.password,saltRounds)
+  const filter = {
+    username : username,
+    password : req.body.password
+  }
+
+  // attempt to match user/hashed password with a user in the database
+  User.findOne(filter).exec().then(
+    user => {
+      if(user){
+        const token = "token"
+        res.status(200).json({
+          message: "POST @ /login (login attempt)",
+          token: token
+        })
+      }
+      else{
+        res.status(401).json({
+          error: "Invalid username/password combination."
+        })
+      }
+    }
+  )
   .catch(err => {
     console.log(err);
     res.status(500).json({
