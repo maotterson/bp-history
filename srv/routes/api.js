@@ -87,25 +87,39 @@ router.post('/users', async (req, res, next ) => {
 //
 router.post('/login', async (req, res, next ) => {
   const username = req.body.username
-  const passwordHash = await bcrypt.hash(req.body.password,saltRounds)
   const filter = {
-    username : username,
-    password : req.body.password
+    username : username
   }
 
   // attempt to match user/hashed password with a user in the database
   User.findOne(filter).exec().then(
     user => {
       if(user){
-        const token = "token"
-        res.status(200).json({
-          message: "POST @ /login (login attempt)",
-          token: token
+        // validate password via compare
+        bcrypt.compare(req.body.password, user.password)
+        .then(result =>{
+          if(result){
+            const token = "token"
+            res.status(200).json({
+              message: "POST @ /login (login attempt)",
+              token: token
+            })
+          }
+          else{
+            res.status(401).json({
+              error: "Invalid authorization."
+            })
+          }
+        })
+        .catch(error =>{
+          res.status(401).json({
+            error: "Invalid authorization."
+          })
         })
       }
       else{
         res.status(401).json({
-          error: "Invalid username/password combination."
+          error: "Invalid authorization."
         })
       }
     }
