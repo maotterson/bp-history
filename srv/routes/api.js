@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 
 const User = require("../models/User");
 const Reading = require("../models/Reading");
@@ -66,7 +69,7 @@ router.post('/users', (req, res, next ) => {
 //  POST /api/login
 //
 router.post('/login', (req, res, next ) => {
-  console.log(req)
+  console.log(req.body)
   res.status(200).json({
     message: "POST @ /login (login attempt)",
     body: req
