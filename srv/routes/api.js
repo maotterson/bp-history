@@ -40,29 +40,46 @@ router.post('/users/:id/readings', (req, res, next) => {
 //  New User
 //  POST /api/users
 //
-router.post('/users', (req, res, next ) => {
+router.post('/users', async (req, res, next ) => {
+  // generate password hash
+  const passwordHash = await bcrypt.hash(req.body.password,saltRounds)
+
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
     username: req.body.username,
-    password: req.body.password,
+    password: passwordHash,
     firstName: req.body.firstname,
     lastName: req.body.lastname
   });
-  console.log(user)
-  user.save()
-    .then(result => {
-      console.log(result);
-      res.status(201).json({
-        message: "POST @ /users (creating new user)",
-        createdUser: result
+
+  // see if username exists
+  const filter = {
+    username : user.username
+  }
+  User.findOne(filter).exec().then(match => {
+    if(!match){
+      console.log(user)
+      user.save()
+      .then(result => {
+        console.log(result);
+        res.status(201).json({
+          message: "POST @ /users (creating new user)",
+          createdUser: result
+        });
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({
+          error: err
+        });
       });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json({
-        error: err
+    }
+    else{
+      res.status(409).json({
+        error: "Username already exists"
       });
-    });
+    } 
+  });
 });
 //================================================================================================================
 //  Login attempt
