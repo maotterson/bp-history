@@ -112,6 +112,12 @@ export default new Vuex.Store({
       const response = await axios.delete(uri,data.body)
       commit('setCurrentReading',response)
     },
+    async loginAttempt({commit}, loginData){
+      const uri = `/api/login`
+      const response = await axios.post(uri,loginData)
+      console.log(response)
+      commit()
+    }
   },
   modules: {
   }

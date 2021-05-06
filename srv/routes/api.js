@@ -62,6 +62,23 @@ router.post('/users', (req, res, next ) => {
     });
 });
 //================================================================================================================
+//  Login attempt
+//  POST /api/login
+//
+router.post('/login', (req, res, next ) => {
+  console.log(req)
+  res.status(200).json({
+    message: "POST @ /login (login attempt)",
+    body: req
+  })
+  .catch(err => {
+    console.log(err);
+    res.status(500).json({
+      error: err
+    });
+  });
+});
+//================================================================================================================
 //  Get User Data by id
 //  GET /api/users/:id
 //
