@@ -7,6 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const checkAuth = require('../middleware/check-auth');
 const verifyId = require('../middleware/verify-id')
+const verifyId = require('../middleware/verify-ip')
 
 const User = require("../models/User");
 const Reading = require("../models/Reading");
@@ -14,7 +15,7 @@ const Reading = require("../models/Reading");
 //  New Reading
 //  POST /api/users/:id/readings
 //
-router.post('/users/:userid/readings', checkAuth, verifyId, (req, res, next) => {
+router.post('/users/:userid/readings', checkAuth, verifyId, verifyIp, (req, res, next) => {
   const reading = new Reading({
     _id: new mongoose.Types.ObjectId(),
     userId: new mongoose.Types.ObjectId(req.params.userid),
@@ -102,11 +103,14 @@ router.post('/login', async (req, res, next ) => {
         bcrypt.compare(req.body.password, user.password)
         .then(result =>{
           if(result){
+            
+            const ip = req.headers['x-forwarded-for']
             const userData = {
               username : user.username,
               id : user._id,
               firstName : user.firstName,
-              lastName : user.lastName
+              lastName : user.lastName,
+              ip : ip
             }
 
             const jwtOptions = {
@@ -151,7 +155,7 @@ router.post('/login', async (req, res, next ) => {
 //  Get User Data by id
 //  GET /api/users/:id
 //
-router.get('/users/:userid', checkAuth, verifyId, (req, res, next) => {
+router.get('/users/:userid', checkAuth, verifyId, verifyIp, (req, res, next) => {
   const userId = req.params.userid;
   User.findById(userId)
     .exec()
@@ -173,7 +177,7 @@ router.get('/users/:userid', checkAuth, verifyId, (req, res, next) => {
 //  Get Readings by User id (with query params for date)
 //  GET /api/users/:id/readings?[start=????&end=????]
 //
-router.get('/users/:userid/readings', checkAuth, verifyId, (req, res, next) => {
+router.get('/users/:userid/readings', checkAuth, verifyId, verifyIp, (req, res, next) => {
   const userId = req.params.userid;
   let start, end;
   try{
@@ -213,7 +217,7 @@ router.get('/users/:userid/readings', checkAuth, verifyId, (req, res, next) => {
 //  Edit User Data
 //  PATCH /api/users/:id
 //
-router.patch('/users/:userid', checkAuth, verifyId, (req, res, next) => {
+router.patch('/users/:userid', checkAuth, verifyId, verifyIp, (req, res, next) => {
   const userId = req.params.userid;
   const updateOps = {};
   for (const ops of req.body) {
@@ -236,7 +240,7 @@ router.patch('/users/:userid', checkAuth, verifyId, (req, res, next) => {
 //  Edit Reading
 //  PATCH /api/users/:userid/readings/:readingid
 //
-router.patch('/users/:userid/readings/:readingid', checkAuth, verifyId, (req, res, next) => {
+router.patch('/users/:userid/readings/:readingid', checkAuth, verifyId, verifyIp, (req, res, next) => {
   const userId = req.params.userid;
   const readingId = req.params.readingid;
   const updateOps = {};
@@ -263,7 +267,7 @@ router.patch('/users/:userid/readings/:readingid', checkAuth, verifyId, (req, re
 //  Delete User
 //  DELETE /api/users/:id
 //
-router.delete('/users/:userid', checkAuth, verifyId, (req, res, next) => {
+router.delete('/users/:userid', checkAuth, verifyId, verifyIp, (req, res, next) => {
   const userId = req.params.userid;
   User.remove({ _id: userId })
     .exec()
@@ -281,7 +285,7 @@ router.delete('/users/:userid', checkAuth, verifyId, (req, res, next) => {
 //  Delete Reading
 //  DELETE /api/users/:userid/readings/:readingid
 //
-router.delete('/users/:userid/readings/:readingid', verifyId, checkAuth, (req, res, next) => {
+router.delete('/users/:userid/readings/:readingid', verifyId, checkAuth, verifyIp, (req, res, next) => {
   const userId = req.params.userid;
   const readingId = req.params.readingid;
 
