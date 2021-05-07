@@ -4,14 +4,14 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-
+const checkAuth = require('../middleware/check-auth');
 const User = require("../models/User");
 const Reading = require("../models/Reading");
 //================================================================================================================
 //  New Reading
 //  POST /api/users/:id/readings
 //
-router.post('/users/:id/readings', (req, res, next) => {
+router.post('/users/:id/readings', checkAuth, (req, res, next) => {
   const reading = new Reading({
     _id: new mongoose.Types.ObjectId(),
     userId: new mongoose.Types.ObjectId(req.params.id),
@@ -135,7 +135,7 @@ router.post('/login', async (req, res, next ) => {
 //  Get User Data by id
 //  GET /api/users/:id
 //
-router.get('/users/:id', (req, res, next) => {
+router.get('/users/:id', checkAuth, (req, res, next) => {
   const userId = req.params.id;
   User.findById(userId)
     .exec()
@@ -157,7 +157,7 @@ router.get('/users/:id', (req, res, next) => {
 //  Get Readings by User id (with query params for date)
 //  GET /api/users/:id/readings?[start=????&end=????]
 //
-router.get('/users/:id/readings', (req, res, next) => {
+router.get('/users/:id/readings', checkAuth, (req, res, next) => {
   const userId = req.params.id;
   let start, end;
   try{
@@ -197,7 +197,7 @@ router.get('/users/:id/readings', (req, res, next) => {
 //  Edit User Data
 //  PATCH /api/users/:id
 //
-router.patch('/users/:id', (req, res, next) => {
+router.patch('/users/:id', checkAuth, (req, res, next) => {
   const userId = req.params.id;
   const updateOps = {};
   for (const ops of req.body) {
@@ -220,7 +220,7 @@ router.patch('/users/:id', (req, res, next) => {
 //  Edit Reading
 //  PATCH /api/users/:userid/readings/:readingid
 //
-router.patch('/users/:userid/readings/:readingid', (req, res, next) => {
+router.patch('/users/:userid/readings/:readingid', checkAuth, (req, res, next) => {
   const userId = req.params.userid;
   const readingId = req.params.readingid;
   const updateOps = {};
@@ -247,7 +247,7 @@ router.patch('/users/:userid/readings/:readingid', (req, res, next) => {
 //  Delete User
 //  DELETE /api/users/:id
 //
-router.delete('/users/:id', (req, res, next) => {
+router.delete('/users/:id', checkAuth, (req, res, next) => {
   const userId = req.params.id;
   User.remove({ _id: userId })
     .exec()
@@ -265,7 +265,7 @@ router.delete('/users/:id', (req, res, next) => {
 //  Delete Reading
 //  DELETE /api/users/:userid/readings/:readingid
 //
-router.delete('/users/:userid/readings/:readingid', (req, res, next) => {
+router.delete('/users/:userid/readings/:readingid', checkAuth, (req, res, next) => {
   const userId = req.params.userid;
   const readingId = req.params.readingid;
 
