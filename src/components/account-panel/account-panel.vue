@@ -13,10 +13,7 @@ export default {
     }
   },
   mounted(){
-    const data = {
-      id: "6087200906f1367ab8ca34ff"
-    }
-    this.$store.dispatch('getUserData',data)
+    
   }
 }
 </script>

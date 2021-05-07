@@ -18,10 +18,9 @@ export default {
     }
   },
   mounted(){
-    const data = {
-      id: "6087200906f1367ab8ca34ff"
-    }
-    this.$store.dispatch('getReadings',data)
+    const userData = this.$store.state.currentUserData.data;
+    console.log(userData)
+    this.$store.dispatch('getReadings',userData)
   }
 }
 </script>

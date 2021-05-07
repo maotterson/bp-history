@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from'axios'
+import axios from 'axios'
+const jwt = require('jsonwebtoken')
 
 Vue.use(Vuex)
 
@@ -10,6 +11,7 @@ export default new Vuex.Store({
     currentResponse : {},
     currentReadings: {},
     currentUserData: {},
+    token: {},
     loggedIn: false
   },
   mutations: {
@@ -48,8 +50,9 @@ export default new Vuex.Store({
       console.log(response)
       this.state.currentUserData = {}
       if(response.status == 200){
+        const userData = response.data.body ? response.data.body : jwt.decode(response.data.token)
         this.state.currentUserData = {
-          data: response.data.body,
+          data: userData,
           success: true
         }
       }
@@ -64,9 +67,11 @@ export default new Vuex.Store({
       console.log(response)
       if(response.status == 200){
         this.state.loggedIn = true;
+        this.state.token = response.data.token;
       }
       else{
         this.state.loggedIn = false;
+        this.state.token = {};
       }
     }
   },
@@ -86,7 +91,14 @@ export default new Vuex.Store({
     async getReadings({commit},data){
       const id = data.id;
       const uri = `/api/users/${id}/readings`
-      const response = await axios.get(uri);
+      
+      // pass authentication options
+      const authConfig = {
+        headers: {
+          'Authorization': `Bearer ${this.state.token}`
+        }
+      }
+      const response = await axios.get(uri,authConfig);
       commit('setCurrentReadings',response)
     },
     async getUserData({commit}, data){
@@ -126,6 +138,7 @@ export default new Vuex.Store({
       const response = await axios.post(uri,loginData)
       console.log("attempt login")
       commit('createLogin', response)
+      commit('setCurrentUserData', response)
     }
   },
   modules: {
