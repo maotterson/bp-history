@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 module.exports = (req, res, next) => {
   try {
     const tokenIp = req.userData.ip;
-    const requesterIp = req.headers['x-forwarded-for']
+    const requesterIp = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(tokenIp == requesterIp){
       next();
     }

@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const checkAuth = require('../middleware/check-auth');
 const verifyId = require('../middleware/verify-id')
-const verifyId = require('../middleware/verify-ip')
+const verifyIp = require('../middleware/verify-ip')
 
 const User = require("../models/User");
 const Reading = require("../models/Reading");
@@ -104,7 +104,8 @@ router.post('/login', async (req, res, next ) => {
         .then(result =>{
           if(result){
             
-            const ip = req.headers['x-forwarded-for']
+            const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            console.log(ip)
             const userData = {
               username : user.username,
               id : user._id,
