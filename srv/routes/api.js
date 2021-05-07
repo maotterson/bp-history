@@ -3,6 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require('jsonwebtoken');
 
 const checkAuth = require('../middleware/check-auth');
 const User = require("../models/User");
@@ -99,7 +100,16 @@ router.post('/login', async (req, res, next ) => {
         bcrypt.compare(req.body.password, user.password)
         .then(result =>{
           if(result){
-            const token = "token"
+            const userData = {
+              username : user.username,
+              id : user._id,
+              firstName : user.firstName,
+              lastName : user.lastName
+            }
+
+            // create a token
+            const token = jwt.sign(userData,process.env.JWT_KEY)
+            
             res.status(200).json({
               message: "POST @ /login (login attempt)",
               token: token
