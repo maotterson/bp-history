@@ -59,6 +59,15 @@ export default new Vuex.Store({
           success: false
         }
       }
+    },
+    createLogin(state,response){
+      console.log(response)
+      if(response.status == 200){
+        this.state.loggedIn = true;
+      }
+      else{
+        this.state.loggedIn = false;
+      }
     }
   },
   actions: {
@@ -115,8 +124,8 @@ export default new Vuex.Store({
     async loginAttempt({commit}, loginData){
       const uri = `/api/login`
       const response = await axios.post(uri,loginData)
-      console.log(response)
-      commit()
+      console.log("attempt login")
+      commit('createLogin', response)
     }
   },
   modules: {
