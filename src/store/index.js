@@ -78,9 +78,17 @@ export default new Vuex.Store({
   actions: {
     async postReading({commit}, data){
       this.state.submittedData = data;
-      const id = "6087200906f1367ab8ca34ff";
+      const id = this.state.currentUserData.data.id;
       const uri = `/api/users/${id}/readings`
-      const response = await axios.post(uri, data)
+
+      // pass authentication options
+      const authConfig = {
+        headers: {
+          'Authorization': `Bearer ${this.state.token}`
+        }
+      }
+
+      const response = await axios.post(uri, data, authConfig)
       commit('setCurrentReading',response)
     },
     async postUser({commit}, data){
@@ -98,6 +106,7 @@ export default new Vuex.Store({
           'Authorization': `Bearer ${this.state.token}`
         }
       }
+
       const response = await axios.get(uri,authConfig);
       commit('setCurrentReadings',response)
     },
