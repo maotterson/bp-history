@@ -107,9 +107,13 @@ router.post('/login', async (req, res, next ) => {
               lastName : user.lastName
             }
 
+            const jwtOptions = {
+              expiresIn : "24h"
+            }
+
             // create a token
-            const token = jwt.sign(userData,process.env.JWT_KEY)
-            
+            const token = jwt.sign(userData, process.env.JWT_KEY, jwtOptions)
+
             res.status(200).json({
               message: "POST @ /login (login attempt)",
               token: token
