@@ -86,6 +86,16 @@ router.post('/users', async (req, res, next ) => {
   });
 });
 //================================================================================================================
+//  Verify token
+//  POST /api/verify
+//
+router.post('/verify', checkAuth, verifyId, verifyIp, async (req, res, next ) => {
+  res.status(200).json({
+    message: "token verified"
+  })
+});
+
+//================================================================================================================
 //  Login attempt
 //  POST /api/login
 //
@@ -105,7 +115,6 @@ router.post('/login', async (req, res, next ) => {
           if(result){
             
             const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            console.log(ip)
             const userData = {
               username : user.username,
               id : user._id,
@@ -120,8 +129,10 @@ router.post('/login', async (req, res, next ) => {
 
             // create a token
             const token = jwt.sign(userData, process.env.JWT_KEY, jwtOptions)
-
             res.status(200).json({
+              config: {
+                data: {}
+              },
               message: "POST @ /login (login attempt)",
               token: token
             })
@@ -133,6 +144,7 @@ router.post('/login', async (req, res, next ) => {
           }
         })
         .catch(error =>{
+          console.log(error)
           res.status(401).json({
             error: "Invalid authorization."
           })

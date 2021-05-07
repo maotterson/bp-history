@@ -8,7 +8,7 @@ export default {
   components: { Dashboard },
   mounted(){
     // see if there is a stored bearer token
-    this.$store.commit('findToken')
+    this.$store.dispatch('verifyToken',null)
   }
 }
 </script>

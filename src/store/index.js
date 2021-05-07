@@ -19,7 +19,7 @@ export default new Vuex.Store({
       const storedToken = localStorage.getItem('token')
       const validStoredToken = storedToken;
 
-      if(validStoredToken){
+      if(storedToken){
         this.state.token = storedToken
         const userData = jwt.decode(storedToken)
         this.state.currentUserData = {
@@ -30,6 +30,21 @@ export default new Vuex.Store({
       }
       else{
         this.state.loggedIn = false;
+      }
+    },
+    setTokenVerificationStatus(state,response){
+      const storedToken = localStorage.getItem('token')
+      if(response.status(200)){
+        this.state.token = storedToken
+        const userData = jwt.decode(storedToken)
+        this.state.currentUserData = {
+          data: userData,
+          success: true
+        }
+        this.state.loggedIn = true;
+      }
+      else{
+        this.logOut();
       }
     },
     setCurrentReading(state,response){
@@ -102,6 +117,19 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    async verifyToken({commit}, data){
+      const storedToken = localStorage.getItem('token')
+      const uri = `/api/verify`
+      // pass authentication options
+      const authConfig = {
+        headers: {
+          'Authorization': `Bearer ${storedToken}`
+        }
+      }
+
+      const response = await axios.post(uri,data,authConfig)
+      commit('setTokenVerificationStatus',response)
+    },
     async postReading({commit}, data){
       this.state.submittedData = data;
       const id = this.state.currentUserData.data.id;
