@@ -2,6 +2,7 @@
   <div
     v-if="userData.data">
     {{userData.data}}
+    <input type="button" @click="onLogOut" value="Log Out">
   </div>
 </template>
 
@@ -14,6 +15,11 @@ export default {
   },
   mounted(){
     
+  },
+  methods:{
+    onLogOut(){
+      this.$store.commit('logOut')
+    }
   }
 }
 </script>

@@ -15,6 +15,23 @@ export default new Vuex.Store({
     loggedIn: false
   },
   mutations: {
+    findToken(){
+      const storedToken = localStorage.getItem('token')
+      const validStoredToken = storedToken;
+
+      if(validStoredToken){
+        this.state.token = storedToken
+        const userData = jwt.decode(storedToken)
+        this.state.currentUserData = {
+          data: userData,
+          success: true
+        }
+        this.state.loggedIn = true;
+      }
+      else{
+        this.state.loggedIn = false;
+      }
+    },
     setCurrentReading(state,response){
       this.state.submittedData = {}
       if(response.status == 200){
@@ -68,11 +85,20 @@ export default new Vuex.Store({
       if(response.status == 200){
         this.state.loggedIn = true;
         this.state.token = response.data.token;
+        localStorage.setItem('token',response.data.token)
       }
       else{
         this.state.loggedIn = false;
         this.state.token = {};
       }
+    },
+    logOut(){
+      localStorage.removeItem('token')
+      this.state.token = {}
+      this.state.loggedIn = false;
+      this.state.currentUserData = {}
+      this.state.currentReadings = {}
+      this.state.submittedData = {}
     }
   },
   actions: {
