@@ -7,6 +7,7 @@
       :key="reading._id"
     >
     {{reading}}
+    </div>
   </div>
 </template>
 

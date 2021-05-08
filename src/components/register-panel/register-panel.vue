@@ -5,6 +5,7 @@
       v-on:submit.prevent="onSubmit"
       method="POST"
     >
+    <BpInputRow>
       <label 
         for="username"
       >
@@ -13,6 +14,8 @@
       <input 
         type="text" name="username" id="username"
       >
+    </BpInputRow>
+    <BpInputRow>
       <label 
         for="username"
       >
@@ -21,6 +24,8 @@
       <input 
         type="password" name="password" id="password"
       >
+    </BpInputRow>
+    <BpInputRow>
       <label 
         for="confirmpass"
       >
@@ -29,6 +34,8 @@
       <input 
         type="password" name="confirmpass" id="onfirmpass"
       >
+    </BpInputRow>
+    <BpInputRow>
       <label 
         for="firstname"
       >
@@ -37,6 +44,8 @@
       <input 
         type="text" name="firstname" id="firstname"
       >
+    </BpInputRow>
+    <BpInputRow>
       <label 
         for="username"
       >
@@ -45,13 +54,18 @@
       <input 
         type="text" name="lastname" id="lastname"
       >
+    </BpInputRow>
       <input type="submit" value="Register">
     </form>
   </div>
 </template>
 
 <script>
+import BpInputRow from '../input-form/bp-input-row'
 export default {
+  components:{
+    BpInputRow
+  },
   methods:{
     onSubmit($event){
       const loginData = {
