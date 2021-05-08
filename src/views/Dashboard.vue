@@ -29,10 +29,10 @@
         class="md:w-1/2"
         v-if="viewing == 'new'"/>
       <GraphPanel 
-        class="w-full"
+        class="md:w-1/2"
         v-if="viewing == 'graphs'"/>
       <AccountPanel
-        class="w-full"
+        class="md:w-1/2"
         v-if="viewing == 'account'"/>
     </div>
     <div
