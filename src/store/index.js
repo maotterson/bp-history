@@ -17,7 +17,6 @@ export default new Vuex.Store({
   mutations: {
     findToken(){
       const storedToken = localStorage.getItem('token')
-      const validStoredToken = storedToken;
 
       if(storedToken){
         this.state.token = storedToken
@@ -34,7 +33,7 @@ export default new Vuex.Store({
     },
     setTokenVerificationStatus(state,response){
       const storedToken = localStorage.getItem('token')
-      if(response.status(200)){
+      if(response.status==200){
         this.state.token = storedToken
         const userData = jwt.decode(storedToken)
         this.state.currentUserData = {

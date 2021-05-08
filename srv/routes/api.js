@@ -89,7 +89,7 @@ router.post('/users', async (req, res, next ) => {
 //  Verify token
 //  POST /api/verify
 //
-router.post('/verify', checkAuth, verifyId, verifyIp, async (req, res, next ) => {
+router.post('/verify', checkAuth, verifyIp, async (req, res, next ) => {
   res.status(200).json({
     message: "token verified"
   })
