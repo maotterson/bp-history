@@ -12,9 +12,16 @@ export default new Vuex.Store({
     currentReadings: {},
     currentUserData: {},
     token: {},
-    loggedIn: false
+    loggedIn: false,
+    registering: false
   },
   mutations: {
+    showRegister(){
+      this.state.registering = true;
+    },
+    showLogin(){
+      this.state.registering = false;
+    },
     findToken(){
       const storedToken = localStorage.getItem('token')
 

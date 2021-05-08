@@ -36,11 +36,14 @@
         v-if="viewing == 'account'"/>
     </div>
     <div
+      class="flex flex-col w-full items-center"
       v-if="!loggedIn">
       <LoginPanel
-        class="w-full"/>
+        class="md:w-1/2"
+        v-if="!registering"/>
       <RegisterPanel
-        class="w-full"/>
+        class="md:w-1/2"
+        v-if="registering"/>
     </div>
   </div>
 </template>
@@ -68,6 +71,9 @@ export default {
   computed:{
     loggedIn(){
       return this.$store.state.loggedIn;
+    },
+    registering(){
+      return this.$store.state.registering;
     }
   },
   methods:{

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-white text-gray-700 flex flex-col items-center text-red-700 shadow-2xl p-12">
     <form
       class="flex flex-col"
       v-on:submit.prevent="onSubmit"
@@ -57,6 +57,8 @@
     </BpInputRow>
       <input type="submit" value="Register">
     </form>
+    <p
+    @click="loginClick">Existing Account? Log In</p>
   </div>
 </template>
 
@@ -73,6 +75,9 @@ export default {
         password: $event.target.elements.password.value
       }
       this.$store.dispatch('loginAttempt',loginData)
+    },
+    loginClick(){
+      this.$store.commit('showLogin')
     }
   }
 }
