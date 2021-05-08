@@ -39,6 +39,8 @@
       v-if="!loggedIn">
       <LoginPanel
         class="w-full"/>
+      <RegisterPanel
+        class="w-full"/>
     </div>
   </div>
 </template>
@@ -48,13 +50,15 @@ import BpInputForm from '../components/input-form/bp-input-form.vue';
 import GraphPanel from '../components/graph-panel/graph-panel.vue';
 import AccountPanel from '../components/account-panel/account-panel.vue';
 import LoginPanel from '../components/login-panel/login-panel.vue';
+import RegisterPanel from '../components/register-panel/register-panel.vue';
 
 export default {
   components:{
     BpInputForm,
     GraphPanel,
     AccountPanel,
-    LoginPanel
+    LoginPanel,
+    RegisterPanel
   },
   data () {
       return {
